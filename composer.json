@@ -1,0 +1,17 @@
+{
+    "name": "kaan/php-scandi-proje",
+    "description": "Scandiweb test case",
+    "autoload": {
+        "psr-4": {
+            "App\\": "./App",
+            "Core\\": "./Core"
+        }
+    },
+    "authors": [
+        {
+            "name": "Kaan Eser",
+            "email": "kaanyildirimeser@gmail.com"
+        }
+    ],
+    "require": {}
+}
