@@ -5,8 +5,6 @@ namespace App\Controller;
 use App\Model\ProductModel;
 use Core\BaseController;
 
-use function PHPSTORM_META\type;
-
 class ProductController extends BaseController
 {
     public function getProducts()

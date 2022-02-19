@@ -13,5 +13,10 @@
             "email": "kaanyildirimeser@gmail.com"
         }
     ],
-    "require": {}
+    "require-dev": {
+        "heroku/heroku-buildpack-php": "^210.0"
+    },
+    "require": {
+        "php-webdriver/webdriver": "^1.12"
+    }
 }

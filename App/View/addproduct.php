@@ -31,23 +31,23 @@
             <div class="form-row my-2">
                 <label class="col-sm-2 col-form-label" for="sku">SKU *</label>
                 <div class="col-md-2 input-group-sm">
-                    <input v-model="product['SKU']" id="sku" type="text" class="form-control">
+                    <input @blur="checkFilled($event.target);" v-model="product['SKU']" id="sku" type="text" class="form-control">
                 </div>
             </div>
             <div class="form-row my-2">
                 <label class="col-sm-2 col-form-label" for="name">Name *</label>
                 <div class="col-md-2 input-group-sm">
-                    <input v-model="product['Name']" id="name" type="text" class="form-control">
+                    <input @blur="checkFilled($event.target);" v-model="product['Name']" id="name" type="text" class="form-control">
                 </div>
             </div>
             <div class="form-row my-2">
                 <label class="col-sm-2 col-form-label" for="price">Price *</label>
                 <div class="col-md-2 input-group-sm">
-                    <input @blur="checkNumber($event.target.value)" v-model="product['Price']" id="price" type="text" class="form-control">
+                    <input @blur="checkNumber($event.target); checkFilled($event.target);" v-model="product['Price']" id="price" type="text" class="form-control">
                 </div>
             </div>
             <div class="form-row my-2">
-                <label class="col-sm-2 col-form-label" for="price">Product Type *</label>
+                <label class="col-sm-2 col-form-label" for="productType">Product Type *</label>
                 <div class="col-md-2">
                     <select id="productType" @change="onChange($event)">
                         <option selected disabled>Please choose a product type</option>
@@ -61,35 +61,35 @@
                 <div class="alert alert-secondary col-sm-3">
                     Please provide a size for DVD
                 </div>
-                <label class="col-sm-2 col-form-label" for="price">Size (MB) *</label>
+                <label class="col-sm-2 col-form-label" for="size">Size (MB) *</label>
                 <div class="col-md-2 input-group-sm">
-                    <input @blur="checkNumber($event.target.value)" v-model="product['additionalInfo']['Size']" id="size" type="text" class="form-control">
+                    <input @blur="checkNumber($event.target); checkFilled($event.target);" v-model="product['additionalInfo']['Size']" id="size" type="text" class="form-control">
                 </div>
             </div>
             <div v-show="selected === 'Book'" class="form-row my-5">
                 <div class="alert alert-secondary col-sm-3">
                     Please provide a weight for Book
                 </div>
-                <label class="col-sm-2 col-form-label" for="price">Weight (KG) *</label>
+                <label class="col-sm-2 col-form-label" for="weight">Weight (KG) *</label>
                 <div class="col-md-2 input-group-sm">
-                    <input @blur="checkNumber($event.target.value)" v-model="product['additionalInfo']['Weight']" id="weight" type="text" class="form-control">
+                    <input @blur="checkNumber($event.target); checkFilled($event.target);" v-model="product['additionalInfo']['Weight']" id="weight" type="text" class="form-control">
                 </div>
             </div>
             <div v-show="selected === 'Furniture'" class="form-row my-5">
                 <div class="alert alert-secondary col-sm-3">
                     Please provide dimensions for Furniture
                 </div>
-                <label class="col-sm-2 col-form-label" for="price">Height (CM) *</label>
+                <label class="col-sm-2 col-form-label" for="height">Height (CM) *</label>
                 <div class="col-md-2 input-group-sm">
-                    <input @blur="checkNumber($event.target.value)" v-model="product['additionalInfo']['Height']" id="height" type="text" class="form-control">
+                    <input @blur="checkNumber($event.target); checkFilled($event.target);" v-model="product['additionalInfo']['Height']" id="height" type="text" class="form-control">
                 </div>
-                <label class="col-sm-2 col-form-label" for="price">Width (CM) *</label>
+                <label class="col-sm-2 col-form-label" for="width">Width (CM) *</label>
                 <div class="col-md-2 input-group-sm">
-                    <input @blur="checkNumber($event.target.value)" v-model="product['additionalInfo']['Width']" id="width" type="text" class="form-control">
+                    <input @blur="checkNumber($event.target); checkFilled($event.target);" v-model="product['additionalInfo']['Width']" id="width" type="text" class="form-control">
                 </div>
-                <label class="col-sm-2 col-form-label" for="price">Length (CM) *</label>
+                <label class="col-sm-2 col-form-label" for="length">Length (CM) *</label>
                 <div class="col-md-2 input-group-sm">
-                    <input @blur="checkNumber($event.target.value)" v-model="product['additionalInfo']['Length']" id="length" type="text" class="form-control">
+                    <input @blur="checkNumber($event.target); checkFilled($event.target);" v-model="product['additionalInfo']['Length']" id="length" type="text" class="form-control">
                 </div>
             </div>
         </form>
@@ -110,19 +110,41 @@
                 product: {
                     additionalInfo: {} 
                 },
+                notFilledInputs: []
             },
             methods: {
                 checkNumber(val) {
-                    if (/^(([0-9]*)|(([0-9]*)\.([0-9]*)))$/.test(val)){
+                    if (/^(([0-9]*)|(([0-9]*)\.([0-9]*)))$/.test(val.value)){
                         this.wrongTypeWarn = false;
                     } else {
                         this.wrongTypeWarn = true;
+                    }
+                },
+                checkFilled(target) {
+                    if (target.value == "") {
+                        this.notFilledWarn = true;
+                        if (!this.notFilledInputs.includes(target.id)){
+                            this.notFilledInputs.push(target.id);
+                        }
+                    } else {
+                        if (this.notFilledInputs.includes(target.id)){
+                            this.notFilledInputs = this.notFilledInputs.filter(function(e) {
+                                return e !== target.id;
+                            });
+                        }
+                        if (this.notFilledInputs.length === 0){
+                            this.notFilledWarn = false;
+                        }
                     }
                 },
                 onChange(e) {
                     this.selected = e.target.value;
                     this.product['ProductType'] = this.selected;
                     this.product['additionalInfo'] = {};
+                    this.notFilledInputs = this.notFilledInputs.filter(function(e) {
+                        return e !== 'size' && e !== 'weight' && e !== 'width' && e !== 'length' && e !== 'height';
+                    });
+                    if (this.notFilledInputs.length === 0) this.notFilledWarn = false;
                 },
                 cancel() {
                     window.location.href = this.homePage;
@@ -131,11 +153,7 @@
                     var formData = new FormData();
                     await formData.append('product', JSON.stringify(this.product));
                     
-                    var productLength = Object.keys(this.product).length;
-                    if (productLength != 5){
-                        this.notFilledWarn = true;
-                    } else {
-                        this.notFilledWarn = false;
+                    if (!this.notFilledWarn && !this.wrongTypeWarn){
                         await axios.post('/addProduct', formData).then((res) => {
                             window.location.href = this.homePage;
                         });
